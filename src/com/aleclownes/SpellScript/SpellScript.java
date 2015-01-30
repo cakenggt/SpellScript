@@ -1,6 +1,7 @@
 package com.aleclownes.SpellScript;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 	
 	List<NodeThread> nodeThreadList = new ArrayList<NodeThread>();
 	public static final double chatRadius = 10;
+	public static final String token = "SpellScript:";
 	
 	@Override
 	public void onEnable(){
@@ -54,27 +56,45 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 			if (entity instanceof InventoryHolder){
 				InventoryHolder holder = (InventoryHolder)entity;
 				for (ItemStack stack : holder.getInventory()){
-					checkStack(player, message, stack);
+					checkStack(event, player, message, stack);
 				}
 			}
 			else if (entity instanceof ItemFrame){
 				ItemFrame frame = (ItemFrame)entity;
-				checkStack(player, message, frame.getItem());
+				checkStack(event, player, message, frame.getItem());
 			}
 			else if (entity instanceof Item){
 				Item item = (Item)entity;
-				checkStack(player, message, item.getItemStack());
+				checkStack(event, player, message, item.getItemStack());
 			}
 		}
 	}
 	
-	public static void checkStack(Player player, String message, ItemStack stack){
+	public void checkStack(AsyncPlayerChatEvent event, Player player, String message, ItemStack stack){
 		String[] split = message.split(" ");
 		if (split.length > 0){
 			ItemMeta meta = stack.getItemMeta();
 			if (split[0].equals(meta.getDisplayName())){
-				String[] args = new String[split.length-1];
-				//TODO finish this method
+				if (meta.hasLore()){
+					List<String> lore = meta.getLore();
+					String[] args = new String[split.length-1];
+					for (int i = 1; i < split.length; i++){
+						args[i-1] = split[i];
+					}
+					Iterator<String> it = lore.iterator();
+					while (it.hasNext()){
+						String loreLine = it.next();
+						if (loreLine.startsWith(token)){
+							String command = loreLine.substring(token.length());
+							Node node = new Node(this, player, new ChatWrapper(event), command, args);
+							NodeThread thread = new NodeThread(new NodeRunnable(this, node));
+							thread.start();
+							it.remove();
+						}
+					}
+					meta.setLore(lore);
+					stack.setItemMeta(meta);
+				}
 			}
 		}
 	}
@@ -85,8 +105,8 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 				+ "node.sleep(2000);"
 				+ "println(2);"
 				+ "println(node.uid);";
-		Node node = new Node(null);
-		NodeThread thread = new NodeThread(new NodeRunnable(node, command, args));
+		Node node = new Node(null, null, null, command, args);
+		NodeThread thread = new NodeThread(new NodeRunnable(null, node));
 		thread.start();
 	}
 

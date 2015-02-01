@@ -23,9 +23,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpellScript extends JavaPlugin implements Listener, Runnable {
 	
-	List<NodeThread> nodeThreadList = new ArrayList<NodeThread>();
+	List<Node> nodeList = new ArrayList<Node>();
 	public static final double chatRadius = 10;
 	public static final String token = "SpellScript:";
+	public static final double powerToHealthRatio = 1000.0;
 	
 	@Override
 	public void onEnable(){
@@ -41,8 +42,8 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 	
 	@Override
 	public void run() {
-		for (NodeThread nodeThread : nodeThreadList){
-			Location loc = nodeThread.getNode().loc;
+		for (Node node : nodeList){
+			Location loc = node.loc;
 			loc.getWorld().playEffect(loc, Effect.MOBSPAWNER_FLAMES, 0);
 		}
 	}
@@ -87,8 +88,8 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 						if (loreLine.startsWith(token)){
 							String command = loreLine.substring(token.length());
 							Node node = new Node(this, player, new ChatWrapper(event), command, args);
-							NodeThread thread = new NodeThread(new NodeRunnable(this, node));
-							thread.start();
+							node.setTask(getServer().getScheduler().runTask(this, new NodeRunnable(this, node)));
+							nodeList.add(node);
 							it.remove();
 						}
 					}

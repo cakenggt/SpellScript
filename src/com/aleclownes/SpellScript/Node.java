@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 public class Node {
@@ -22,6 +23,8 @@ public class Node {
 	String command;
 	String[] args;
 	Inventory inv;
+	boolean isAlive;
+	BukkitTask task;
 
 	public Node(SpellScript p, Player sender, ChatWrapper chatWrapper, String command, String[] args){
 		if (sender != null){
@@ -35,6 +38,7 @@ public class Node {
 		this.args = args;
 		this.p = p;
 		inv = p.getServer().createInventory(null, 54);
+		isAlive = true;
 	}
 	
 	/**If enough power exists in the node, take the required power away. If it doesn't exist, kill the node.
@@ -57,28 +61,18 @@ public class Node {
 		return chatWrapper;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void suicide() {
-		Thread.currentThread().stop();
+		isAlive = false;
+		task.cancel();
 	}
 
 	public void sleep(double seconds) {
-		try {
-			Thread.sleep((long)seconds*1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
+		//TODO somehow do this with the BukkitTask
 	}
 
 	public void moveForward() {
 		checkPower(1);
 		loc = loc.add(direction);	
-	}
-
-	public void move(int direction) {
-		// TODO Auto-generated method stub
-	
 	}
 
 	public void setDirection(Vector direction){
@@ -104,16 +98,23 @@ public class Node {
 		return array;
 	}
 	
-	public void teleport(EntityWrapper entity, double[] location){
-		//TODO auto generated
+	public void teleport(final EntityWrapper entity, double[] location){
+		final Location dest = new Location(loc.getWorld(), location[0], location[1], location[2]);
+		checkPower(Math.sqrt(dest.distance(loc)));
+		entity.getEntity().teleport(dest);
 	}
 	
 	public double getPower() {
 		return power;
 	}
 	
-	public void takePower(LivingEntityWrapper live, double amount){
-		//TODO auto
+	public void takePower(final LivingEntityWrapper live, double amount){
+		amount = Math.min(amount, 1000.0);
+		final double health = amount/SpellScript.powerToHealthRatio;
+		checkPower(1);
+		double receivedPower = Math.min(health, live.getHealth())*SpellScript.powerToHealthRatio;
+		live.getLivingEntity().damage(health);
+		power += receivedPower;
 	}
 	
 	public void takePower(NodeWrapper live, double amount){
@@ -235,6 +236,14 @@ public class Node {
 	public void selfDestruct() {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public boolean isAlive(){
+		return isAlive;
+	}
+	
+	void setTask(BukkitTask task){
+		this.task = task;
 	}
 
 }

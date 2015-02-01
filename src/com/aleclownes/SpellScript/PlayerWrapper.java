@@ -23,5 +23,9 @@ public class PlayerWrapper extends LivingEntityWrapper {
 	public ItemStackWrapper getItemInHand(){
 		return new ItemStackWrapper(getPlayer().getItemInHand());
 	}
+	
+	public boolean isOnline(){
+		return getPlayer().isOnline();
+	}
 
 }

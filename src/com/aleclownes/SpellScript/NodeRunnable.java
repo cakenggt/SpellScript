@@ -2,9 +2,10 @@ package com.aleclownes.SpellScript;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
-public class NodeRunnable implements Runnable {
+import org.bukkit.scheduler.BukkitRunnable;
+
+public class NodeRunnable extends BukkitRunnable {
 
 	Node node;
 	SpellScript p;

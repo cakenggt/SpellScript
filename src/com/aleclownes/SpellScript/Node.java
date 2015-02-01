@@ -23,7 +23,6 @@ public class Node {
 	String command;
 	String[] args;
 	Inventory inv;
-	boolean isAlive;
 	BukkitTask task;
 
 	public Node(SpellScript p, Player sender, ChatWrapper chatWrapper, String command, String[] args){
@@ -38,7 +37,6 @@ public class Node {
 		this.args = args;
 		this.p = p;
 		inv = p.getServer().createInventory(null, 54);
-		isAlive = true;
 	}
 	
 	/**If enough power exists in the node, take the required power away. If it doesn't exist, kill the node.
@@ -62,7 +60,6 @@ public class Node {
 	}
 	
 	public void suicide() {
-		isAlive = false;
 		task.cancel();
 	}
 
@@ -99,7 +96,9 @@ public class Node {
 	}
 	
 	public void teleport(final EntityWrapper entity, double[] location){
-		final Location dest = new Location(loc.getWorld(), location[0], location[1], location[2]);
+		float pitch = entity.getEntity().getLocation().getPitch();
+		float yaw = entity.getEntity().getLocation().getYaw();
+		final Location dest = new Location(loc.getWorld(), location[0], location[1], location[2], yaw, pitch);
 		checkPower(Math.sqrt(dest.distance(loc)));
 		entity.getEntity().teleport(dest);
 	}
@@ -191,7 +190,8 @@ public class Node {
 	}
 	
 	public void announce(PlayerWrapper player, String message){
-		//TODO
+		checkPower(1);
+		player.getPlayer().sendMessage(message);
 	}
 	
 	public void addPotionEffect(LivingEntityWrapper live, PotionEffect effect){
@@ -239,7 +239,9 @@ public class Node {
 	}
 	
 	public boolean isAlive(){
-		return isAlive;
+		int taskId = task.getTaskId();
+		return (p.getServer().getScheduler().isQueued(taskId) || 
+				p.getServer().getScheduler().isCurrentlyRunning(taskId));
 	}
 	
 	void setTask(BukkitTask task){

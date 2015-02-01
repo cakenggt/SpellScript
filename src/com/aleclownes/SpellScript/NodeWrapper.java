@@ -29,5 +29,9 @@ public class NodeWrapper extends Wrapper {
 	public String[] getArgs(){
 		return getNode().getArgs();
 	}
+	
+	public boolean isAlive(){
+		return getNode().isAlive();
+	}
 
 }

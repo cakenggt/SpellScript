@@ -105,19 +105,19 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 				InventoryHolder holder = (InventoryHolder)entity;
 				for (ItemStack stack : holder.getInventory()){
 					if (stack != null){
-						checkStack(event, player, message, stack);
+						checkStack(event, player, message, stack, entity.getLocation());
 					}
 				}
 			}
 			else if (entity instanceof ItemFrame){
 				ItemFrame frame = (ItemFrame)entity;
 				if (frame.getItem() != null){
-					checkStack(event, player, message, frame.getItem());
+					checkStack(event, player, message, frame.getItem(), entity.getLocation());
 				}
 			}
 			else if (entity instanceof Item){
 				Item item = (Item)entity;
-				checkStack(event, player, message, item.getItemStack());
+				checkStack(event, player, message, item.getItemStack(), entity.getLocation());
 			}
 		}
 		ChatWrapper chat = new ChatWrapper(event);
@@ -126,7 +126,7 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 		}
 	}
 	
-	public void checkStack(AsyncPlayerChatEvent event, Player player, String message, ItemStack stack){
+	public void checkStack(AsyncPlayerChatEvent event, Player player, String message, ItemStack stack, Location loc){
 		String[] split = message.split(" ");
 		if (split.length > 0){
 			ItemMeta meta = stack.getItemMeta();
@@ -142,8 +142,8 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 						String loreLine = it.next();
 						if (loreLine.startsWith(token)){
 							String command = loreLine.substring(token.length());
-							Node node = new Node(this, player, new ChatWrapper(event), command, args);
-							node.setTask(getServer().getScheduler().runTaskLater(this, new NodeRunnable(this, node), 1));
+							Node node = new Node(this, player, new ChatWrapper(event), command, args, loc);
+							node.setTask(getServer().getScheduler().runTaskLaterAsynchronously(this, new NodeRunnable(this, node), 1));
 							nodeList.add(node);
 							it.remove();
 						}

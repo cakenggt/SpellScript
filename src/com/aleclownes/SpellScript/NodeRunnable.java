@@ -3,9 +3,7 @@ package com.aleclownes.SpellScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
-import org.bukkit.scheduler.BukkitRunnable;
-
-public class NodeRunnable extends BukkitRunnable {
+public class NodeRunnable implements Runnable {
 
 	Node node;
 	SpellScript p;

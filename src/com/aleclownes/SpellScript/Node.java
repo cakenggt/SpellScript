@@ -1,11 +1,14 @@
 package com.aleclownes.SpellScript;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,7 +26,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 public class Node {
-	
+
 	SpellScript p;
 	Location loc;
 	Vector direction;
@@ -36,6 +39,7 @@ public class Node {
 	Inventory inv;
 	BukkitTask task;
 	BukkitScheduler sched;
+	Map<String, Object> map = new HashMap<String, Object>();
 
 	public Node(SpellScript p, Player sender, ChatWrapper chatWrapper, String command, String[] args, Location loc){
 		this.sender = sender;
@@ -49,7 +53,7 @@ public class Node {
 		sched = p.getServer().getScheduler();
 		inv = p.getServer().createInventory(null, 54);
 	}
-	
+
 	/**If enough power exists in the node, take the required power away. If it doesn't exist, kill the node.
 	 * @param power
 	 */
@@ -61,15 +65,15 @@ public class Node {
 			suicide();
 		}
 	}
-	
+
 	protected void setChatWrapper(ChatWrapper chatWrapper){
 		this.chatWrapper = chatWrapper;
 	}
-	
+
 	public ChatWrapper getChatWrapper(){
 		return chatWrapper;
 	}
-	
+
 	public void suicide() {
 		task.cancel();
 	}
@@ -97,11 +101,11 @@ public class Node {
 	public Vector getDirection() {
 		return direction;
 	}
-	
+
 	public double[] getLocation() {
 		return locationToArray(loc);
 	}
-	
+
 	static double[] locationToArray(Location loc){
 		double[] array = new double[3];
 		array[0] = loc.getX();
@@ -109,8 +113,11 @@ public class Node {
 		array[2] = loc.getZ();
 		return array;
 	}
-	
+
 	public void teleport(final EntityWrapper entity, double[] location){
+		if (entity.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		float pitch = entity.getEntity().getLocation().getPitch();
 		float yaw = entity.getEntity().getLocation().getYaw();
 		final Location dest = new Location(loc.getWorld(), location[0], location[1], location[2], yaw, pitch);
@@ -129,12 +136,19 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public double getPower() {
 		return power;
 	}
-	
+
+	public Map<String, Object> getMap() {
+		return map;
+	}
+
 	public void takePower(final LivingEntityWrapper live, double amount){
+		if (live.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		amount = Math.min(amount, 1000.0);
 		final double health = amount/SpellScript.powerToHealthRatio;
 		checkPower(1);
@@ -154,16 +168,22 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void takePower(final NodeWrapper node, double amount){
+		if (node.getNode().loc.distance(loc) > 1){
+			return;
+		}
 		final double newAmount = Math.min(amount, 1000.0);
 		checkPower(1);
 		double receivedPower = Math.min(newAmount, node.getNode().getPower());
 		power += receivedPower;
 		node.getNode().power -= receivedPower;
 	}
-	
+
 	public void givePower(final LivingEntityWrapper live, double amount){
+		if (live.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		amount = Math.min(amount, 1000.0);
 		double receivedPower = Math.min(amount, power);
 		final double health = receivedPower/SpellScript.powerToHealthRatio;
@@ -183,16 +203,22 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void givePower(NodeWrapper node, double amount){
+		if (node.getNode().loc.distance(loc) > 1){
+			return;
+		}
 		final double newAmount = Math.min(amount, 1000.0);
 		checkPower(1);
 		double receivedPower = Math.min(newAmount, getPower());
 		power -= receivedPower;
 		node.getNode().power += receivedPower;
 	}
-	
+
 	public void setVelocity(final EntityWrapper entity, final Vector vector){
+		if (entity.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(10);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -218,7 +244,7 @@ public class Node {
 		}
 		return nearby;
 	}
-	
+
 	public List<NodeWrapper> getNearbyNodes(double distance){
 		List<NodeWrapper> nearby = new ArrayList<NodeWrapper>();
 		for (Node node : p.nodeList){
@@ -246,15 +272,15 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void placeBlock(int slot){
 		//TODO
 	}
-	
+
 	public void takeItem(ItemWrapper item){
 		//TODO
 	}
-	
+
 	public ItemWrapper dropItem(int slot, int amount){
 		//TODO
 		return null;
@@ -271,8 +297,11 @@ public class Node {
 	public String[] getArgs(){
 		return args;
 	}
-	
+
 	public void setPassenger(final EntityWrapper passenger, final EntityWrapper vehicle){
+		if (passenger.getEntity().getLocation().distance(loc) > 1 || vehicle.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -288,8 +317,11 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setFireTicks(final EntityWrapper entity, final int ticks){
+		if (entity.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -305,8 +337,11 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setFallDistance(final EntityWrapper entity, final float distance){
+		if (entity.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -322,7 +357,7 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void announce(final PlayerWrapper player, final String message){
 		checkPower(1);
 		try {
@@ -339,8 +374,11 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void addPotionEffect(final LivingEntityWrapper live, final PotionEffect effect){
+		if (live.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -356,12 +394,15 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public PotionEffect createPotionEffect(String potionEffectType, int duration, int amplifier){
 		return new PotionEffect(PotionEffectType.getByName(potionEffectType), duration, amplifier);
 	}
-	
+
 	public void setRemainingAir(final LivingEntityWrapper live, final int air){
+		if (live.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -377,8 +418,11 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setFoodLevel(final PlayerWrapper live, final int level){
+		if (live.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(100);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -394,8 +438,11 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendBlockChange(final PlayerWrapper player, double[] location, final String type, final byte data){
+		if (player.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		final Location loca = new Location(loc.getWorld(), location[0], location[1], location[2]);
 		try {
@@ -413,13 +460,16 @@ public class Node {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setItemMeta(int slot, ItemMeta meta){
 		ItemStack stack = inv.getItem(slot);
 		stack.setItemMeta(meta);
 	}
-	
+
 	public void setPickupDelay(final ItemWrapper item, final int delay){
+		if (item.getEntity().getLocation().distance(loc) > 1){
+			return;
+		}
 		checkPower(50);
 		try {
 			sched.callSyncMethod(p, new Callable<Boolean>(){
@@ -478,15 +528,28 @@ public class Node {
 		}
 		suicide();
 	}
-	
+
 	public boolean isAlive(){
 		int taskId = task.getTaskId();
 		return (p.getServer().getScheduler().isQueued(taskId) || 
 				p.getServer().getScheduler().isCurrentlyRunning(taskId));
 	}
-	
+
 	void setTask(BukkitTask task){
 		this.task = task;
+	}
+
+	@Override
+	public boolean equals(Object object){
+		if (object == null) { return false; }
+		if (object == this) { return true; }
+		if (object.getClass() != getClass()) {
+			return false;
+		}
+		Node rhs = (Node) object;
+		return new EqualsBuilder()
+		.append(uid, rhs.uid)
+		.isEquals();
 	}
 
 }

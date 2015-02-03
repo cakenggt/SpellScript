@@ -23,5 +23,10 @@ public class BlockWrapper extends Wrapper {
 		loc[2] = getBlock().getZ();
 		return loc;
 	}
+	
+	@Override
+	public boolean equals(Object object){
+		return getBlock().equals(object);
+	}
 
 }

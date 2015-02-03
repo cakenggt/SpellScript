@@ -27,5 +27,10 @@ public class PlayerWrapper extends LivingEntityWrapper {
 	public boolean isOnline(){
 		return getPlayer().isOnline();
 	}
+	
+	@Override
+	public boolean equals(Object object){
+		return getPlayer().equals(object);
+	}
 
 }

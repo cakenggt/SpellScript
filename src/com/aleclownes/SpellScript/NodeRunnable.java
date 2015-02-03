@@ -23,7 +23,7 @@ public class NodeRunnable implements Runnable {
 		engine.put("node", node);
 		engine.put("args", node.getArgs());
 		try {
-			engine.eval("importClass(org.bukkit.util.Vector);importPackage(org.bukkit.potion)");
+			engine.eval("importClass(org.bukkit.util.Vector);importPackage(org.bukkit.potion);");
 			engine.eval("importPackage = null; importClass = null");
 			engine.eval(node.getCommand());
 		} catch (final Exception e) {

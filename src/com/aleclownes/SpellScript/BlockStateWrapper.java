@@ -16,5 +16,10 @@ public class BlockStateWrapper extends Wrapper {
 	public MaterialData getData(){
 		return getBlockState().getData();
 	}
+	
+	@Override
+	public boolean equals(Object object){
+		return getBlockState().equals(object);
+	}
 
 }

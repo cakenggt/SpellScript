@@ -11,5 +11,10 @@ public class Wrapper {
 	protected Object getObject(){
 		return object;
 	}
+	
+	@Override
+	public boolean equals(Object object){
+		return this.object.equals(object);
+	}
 
 }

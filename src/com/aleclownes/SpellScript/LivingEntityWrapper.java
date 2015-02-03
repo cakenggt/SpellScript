@@ -40,5 +40,10 @@ public class LivingEntityWrapper extends EntityWrapper {
 	public double getHealth(){
 		return ((Damageable)getLivingEntity()).getHealth();
 	}
+	
+	@Override
+	public boolean equals(Object object){
+		return getLivingEntity().equals(object);
+	}
 
 }

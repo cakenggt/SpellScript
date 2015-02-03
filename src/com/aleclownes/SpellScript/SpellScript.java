@@ -1,13 +1,19 @@
 package com.aleclownes.SpellScript;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,7 +24,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -26,12 +34,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpellScript extends JavaPlugin implements Listener, Runnable {
-	
+
 	List<Node> nodeList = new ArrayList<Node>();
 	public static final double chatRadius = 10;
 	public static final String token = "SpellScript:";
+	public static final String ticket = "SpellScript Ticket:";
 	public static final double powerToHealthRatio = 1000.0;
-	
+
 	@Override
 	public void onEnable(){
 		getServer().getPluginManager().registerEvents(this, this);
@@ -43,7 +52,7 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 	public void onDisable(){
 		getLogger().info(this + " disabled!");
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = null;
@@ -79,7 +88,7 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 		}
 		return false; 
 	}
-	
+
 	@Override
 	public void run() {
 		Iterator<Node> it = nodeList.iterator();
@@ -95,6 +104,38 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onTicketActivation(PlayerInteractEvent event){
+		if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK){
+			Player player = event.getPlayer();
+			ItemStack inHand = player.getItemInHand();
+			if (inHand.getType() == Material.PAPER){
+				ItemMeta meta = inHand.getItemMeta();
+				if (meta.hasLore()){
+					List<String> lore = meta.getLore();
+					Iterator<String> it = lore.iterator();
+					while(it.hasNext()){
+						String line = it.next();
+						if (line.startsWith(ticket)){
+							UUID uid = UUID.fromString(line.substring(ticket.length()));
+							Iterator<Node> nodeIt = nodeList.iterator();
+							while(nodeIt.hasNext()){
+								Node node = nodeIt.next();
+								if (node.uid.equals(uid)){
+									node.task.cancel();
+									it.remove();
+								}
+							}
+							it.remove();
+						}
+					}
+					meta.setLore(lore);
+				}
+				inHand.setItemMeta(meta);
+			}
+		}
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		Player player = event.getPlayer();
@@ -125,7 +166,7 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 			node.setChatWrapper(chat);
 		}
 	}
-	
+
 	public void checkStack(AsyncPlayerChatEvent event, Player player, String message, ItemStack stack, Location loc){
 		String[] split = message.split(" ");
 		if (split.length > 0){
@@ -146,12 +187,36 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 							node.setTask(getServer().getScheduler().runTaskLaterAsynchronously(this, new NodeRunnable(this, node), 1));
 							nodeList.add(node);
 							it.remove();
+							ItemStack ticket = new ItemStack(Material.PAPER);
+							ItemMeta ticketMeta = ticket.getItemMeta();
+							ticketMeta.setLore(Arrays.asList(SpellScript.ticket + node.uid.toString()));
+							ticket.setItemMeta(ticketMeta);
+							for (ItemStack droppedStack : player.getInventory().addItem(ticket).values()){
+								player.getWorld().dropItem(player.getLocation(), droppedStack);
+							}
 						}
 					}
 					meta.setLore(lore);
 					stack.setItemMeta(meta);
 				}
 			}
+		}
+	}
+
+	public static void main(String[] args){
+		String command = "importPackage = null; importClass = null;"
+				+ "println(1);"
+				+ "println(2);"
+				+ "println(new Vector() instanceof Vector);"
+				+ "println(test instanceof com.aleclownes.SpellScript.Node);";
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
+		try {
+			engine.eval("importClass(org.bukkit.util.Vector);importPackage(org.bukkit.potion);");
+			engine.eval("importPackage = null; importClass = null");
+			engine.put("test", new NodeRunnable(null, null));
+			engine.eval(command);
+		} catch (final Exception e) {
+			e.printStackTrace();
 		}
 	}
 

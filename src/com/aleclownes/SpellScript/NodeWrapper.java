@@ -33,5 +33,14 @@ public class NodeWrapper extends Wrapper {
 	public boolean isAlive(){
 		return getNode().isAlive();
 	}
+	
+	public Object getMapValue(String key){
+		return getNode().getMap().get(key);
+	}
+	
+	@Override
+	public boolean equals(Object object){
+		return getNode().equals(object);
+	}
 
 }

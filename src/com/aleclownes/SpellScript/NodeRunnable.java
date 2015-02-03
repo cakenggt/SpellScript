@@ -21,7 +21,6 @@ public class NodeRunnable implements Runnable {
 	public void run() {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("JavaScript");
 		engine.put("node", node);
-		engine.put("args", node.getArgs());
 		try {
 			engine.eval("importClass(org.bukkit.util.Vector);importPackage(org.bukkit.potion);");
 			engine.eval("importPackage = null; importClass = null");

@@ -142,23 +142,26 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 		World world = event.getPlayer().getWorld();
 		String message = event.getMessage();
 		for (Entity entity : world.getEntities()){
-			if (entity instanceof InventoryHolder){
-				InventoryHolder holder = (InventoryHolder)entity;
-				for (ItemStack stack : holder.getInventory()){
-					if (stack != null){
-						checkStack(event, player, message, stack, entity.getLocation());
+			if (entity.getLocation().distance(player.getLocation()) <= chatRadius) {
+				if (entity instanceof InventoryHolder) {
+					InventoryHolder holder = (InventoryHolder) entity;
+					for (ItemStack stack : holder.getInventory()) {
+						if (stack != null) {
+							checkStack(event, player, message, stack,
+									entity.getLocation());
+						}
 					}
+				} else if (entity instanceof ItemFrame) {
+					ItemFrame frame = (ItemFrame) entity;
+					if (frame.getItem() != null) {
+						checkStack(event, player, message, frame.getItem(),
+								entity.getLocation());
+					}
+				} else if (entity instanceof Item) {
+					Item item = (Item) entity;
+					checkStack(event, player, message, item.getItemStack(),
+							entity.getLocation());
 				}
-			}
-			else if (entity instanceof ItemFrame){
-				ItemFrame frame = (ItemFrame)entity;
-				if (frame.getItem() != null){
-					checkStack(event, player, message, frame.getItem(), entity.getLocation());
-				}
-			}
-			else if (entity instanceof Item){
-				Item item = (Item)entity;
-				checkStack(event, player, message, item.getItemStack(), entity.getLocation());
 			}
 		}
 		ChatWrapper chat = new ChatWrapper(event);

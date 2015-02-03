@@ -163,7 +163,9 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 		}
 		ChatWrapper chat = new ChatWrapper(event);
 		for (Node node : nodeList){
-			node.setChatWrapper(chat);
+			if (node.loc.getWorld().equals(world)){
+				node.setChatWrapper(chat);
+			}
 		}
 	}
 

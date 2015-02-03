@@ -10,11 +10,19 @@ import org.bukkit.event.Event;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.ItemStack;
 
+/**Factory class for constructing the appropriate wrappers for objects
+ * @author alownes
+ *
+ */
 public abstract class WrapperFactory {
 	
 	private WrapperFactory(){}
 	
-	public Wrapper wrap(Object object){
+	/**Constructs the appropriate wrapper class for an object
+	 * @param object - Object to be wrapped
+	 * @return Wrapper
+	 */
+	public static Wrapper wrap(Object object){
 		if (object instanceof Node){
 			return new NodeWrapper((Node)object);
 		}

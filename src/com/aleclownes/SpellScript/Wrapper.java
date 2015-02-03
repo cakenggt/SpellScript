@@ -1,5 +1,9 @@
 package com.aleclownes.SpellScript;
 
+/**Wrapper superclass
+ * @author alownes
+ *
+ */
 public class Wrapper {
 	
 	Object object;
@@ -8,6 +12,9 @@ public class Wrapper {
 		this.object = object;
 	}
 	
+	/**Gets the object wrapped by this wrapper
+	 * @return Wrapped object
+	 */
 	protected Object getObject(){
 		return object;
 	}

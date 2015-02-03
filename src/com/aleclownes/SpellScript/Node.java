@@ -106,7 +106,7 @@ public class Node {
 
 	/**
 	 * Moves the node forward on it's set direction
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void moveForward() {
 		checkPower(1);
@@ -152,7 +152,7 @@ public class Node {
 	/**Teleports the entity to the specified location. The entity must be within 1 meter.
 	 * @param entity - Entity to teleport
 	 * @param location - Location to teleport to
-	 * @power Square root of the distance
+	 * @spellscript.power Square root of the distance
 	 */
 	public void teleport(final EntityWrapper entity, double[] location){
 		if (entity.getEntity().getLocation().distance(loc) > 1){
@@ -196,7 +196,7 @@ public class Node {
 	 * 1 meter.
 	 * @param live - Living entity
 	 * @param amount - less than or equal to 1000
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void takePower(final LivingEntityWrapper live, double amount){
 		if (live.getEntity().getLocation().distance(loc) > 1){
@@ -226,7 +226,7 @@ public class Node {
 	 * a node at a time. The node must be within 1 meter.
 	 * @param node - Target
 	 * @param amount - Less than or equal to 1000
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void takePower(final NodeWrapper node, double amount){
 		if (node.getNode().loc.distance(loc) > 1){
@@ -243,7 +243,7 @@ public class Node {
 	 * a time. There is 1000 power per 1 health. The entity must be within 1 meter.
 	 * @param live - LivingEntity
 	 * @param amount - Less than or equal to 1000
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void givePower(final LivingEntityWrapper live, double amount){
 		if (live.getEntity().getLocation().distance(loc) > 1){
@@ -272,7 +272,7 @@ public class Node {
 	/**Gives power to a node. A maximum of 1000 power can be given at a time. The node must be within 1 meter.
 	 * @param node - Receiving node
 	 * @param amount - Less than or equal to 1000
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void givePower(NodeWrapper node, double amount){
 		if (node.getNode().loc.distance(loc) > 1){
@@ -288,7 +288,7 @@ public class Node {
 	/**Sets the velocity of the entity. The entity must be within 1 meter.
 	 * @param entity - Entity to set the velocity of
 	 * @param vector - Vector for velocity
-	 * @power 10
+	 * @spellscript.power 10
 	 */
 	public void setVelocity(final EntityWrapper entity, final Vector vector){
 		if (entity.getEntity().getLocation().distance(loc) > 1){
@@ -313,7 +313,7 @@ public class Node {
 	/**Gets a list of nearby entities within a radius
 	 * @param distance - Radius to check for entities in
 	 * @return List of EntityWrapper
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public List<EntityWrapper> getNearbyEntities(double distance) {
 		checkPower(1);
@@ -329,7 +329,7 @@ public class Node {
 	/**Gets a list of nearby nodes within a radius
 	 * @param distance - Radius to check for nodes in
 	 * @return List of NodeWrapper
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public List<NodeWrapper> getNearbyNodes(double distance){
 		checkPower(1);
@@ -344,7 +344,7 @@ public class Node {
 
 	/**
 	 * Breaks the block the node is currently occupying.
-	 * @power 100
+	 * @spellscript.power 100
 	 */
 	public void breakBlock() {
 		checkPower(100);
@@ -376,7 +376,7 @@ public class Node {
 	/**Places the block in the current slot in the location the node resides. This is cancelled if the block the node is occupying is
 	 * not Air or if the item in the slot is not a block.
 	 * @param slot - Slot number
-	 * @power 10
+	 * @spellscript.power 10
 	 */
 	public void placeBlock(int slot){
 		final ItemStack stack = inv.getItem(slot);
@@ -406,7 +406,7 @@ public class Node {
 
 	/**Incorporates the selected ItemWrapper into the node's inventory. The item must be within 1 meter.
 	 * @param item - Selected ItemWrapper
-	 * @power 10
+	 * @spellscript.power 10
 	 */
 	public void takeItem(final ItemWrapper item){
 		if (item.getItem().getLocation().distance(loc) <= 1) {
@@ -437,7 +437,7 @@ public class Node {
 	 * @param slot - Specified slot of the node's inventory
 	 * @param amount - Number of items to drop
 	 * @return ItemWrapper of the dropped item
-	 * @power 10
+	 * @spellscript.power 10
 	 */
 	public ItemWrapper dropItem(int slot, int amount){
 		ItemStack stack = inv.getItem(slot);
@@ -492,7 +492,7 @@ public class Node {
 	/**Sets the vehicle entity's passenger. The vehicle entity and passenger entity must be within 1 meter.
 	 * @param passenger - EntityWrapper
 	 * @param vehicle - EntityWrapper
-	 * @power 50
+	 * @spellscript.power 50
 	 */
 	public void setPassenger(final EntityWrapper passenger, final EntityWrapper vehicle){
 		if (passenger.getEntity().getLocation().distance(loc) > 1 || vehicle.getEntity().getLocation().distance(loc) > 1){
@@ -517,7 +517,7 @@ public class Node {
 	/**Sets the fire ticks of the entity. The entity must be within 1 meter.
 	 * @param entity - EntityWrapper
 	 * @param ticks - ticks the entity will be on fire
-	 * @power The difference between the current fire ticks and the specified amount
+	 * @spellscript.power The difference between the current fire ticks and the specified amount
 	 */
 	public void setFireTicks(final EntityWrapper entity, final int ticks){
 		if (entity.getEntity().getLocation().distance(loc) > 1){
@@ -542,7 +542,7 @@ public class Node {
 	/**Sets the fall distance of the entity. The entity must be within 1 meter.
 	 * @param entity - EntityWrapper
 	 * @param distance - fall distance
-	 * @power difference between the current fall distance and the specified amount
+	 * @spellscript.power difference between the current fall distance and the specified amount
 	 */
 	public void setFallDistance(final EntityWrapper entity, final float distance){
 		if (entity.getEntity().getLocation().distance(loc) > 1){
@@ -567,7 +567,7 @@ public class Node {
 	/**Sends a message to the specified player.
 	 * @param player - PlayerWrapper
 	 * @param message - String
-	 * @power 1
+	 * @spellscript.power 1
 	 */
 	public void announce(final PlayerWrapper player, final String message){
 		checkPower(1);
@@ -589,7 +589,7 @@ public class Node {
 	/**Adds a potion effect to the living entity. The entity must be within 1 meter.
 	 * @param live - LivingEntityWrapper
 	 * @param effect - PotionEffect
-	 * @power duration multiplied by amplifier+1
+	 * @spellscript.power duration multiplied by amplifier+1
 	 */
 	public void addPotionEffect(final LivingEntityWrapper live, final PotionEffect effect){
 		if (live.getEntity().getLocation().distance(loc) > 1){
@@ -624,7 +624,7 @@ public class Node {
 	/**Sets the living entity's remaining air. Must be within 1 meter of entity.
 	 * @param live - LivingEntityWrapper
 	 * @param air - remaining air in ticks
-	 * @power difference between current remaining air and specified value
+	 * @spellscript.power difference between current remaining air and specified value
 	 */
 	public void setRemainingAir(final LivingEntityWrapper live, final int air){
 		if (live.getEntity().getLocation().distance(loc) > 1){
@@ -649,7 +649,7 @@ public class Node {
 	/**Sets the food level of the specified player. Must be within 1 meter of the player.
 	 * @param live - PlayerWrapper
 	 * @param level - Food level
-	 * @power difference between current food level and specified value
+	 * @spellscript.power difference between current food level and specified value
 	 */
 	public void setFoodLevel(final PlayerWrapper live, final int level){
 		if (live.getEntity().getLocation().distance(loc) > 1){
@@ -676,7 +676,7 @@ public class Node {
 	 * @param location - Location of block change as an array of 3 doubles
 	 * @param type - Material of block change as a string
 	 * @param data - Data as byte
-	 * @power 10
+	 * @spellscript.power 10
 	 */
 	public void sendBlockChange(final PlayerWrapper player, double[] location, final String type, final byte data){
 		if (player.getEntity().getLocation().distance(loc) > 1){
@@ -712,7 +712,7 @@ public class Node {
 	/**Sets the pickup delay of an ItemWrapper. Must be within 1 meter of the item.
 	 * @param item - ItemWrapper
 	 * @param delay - delay in ticks
-	 * @power difference between current pickup delay and specified value
+	 * @spellscript.power difference between current pickup delay and specified value
 	 */
 	public void setPickupDelay(final ItemWrapper item, final int delay){
 		if (item.getEntity().getLocation().distance(loc) > 1){
@@ -735,7 +735,7 @@ public class Node {
 	}
 
 	/**Sets the current block the node resides in on fire if the block is air.
-	 * @power 50
+	 * @spellscript.power 50
 	 */
 	public void burn() {
 		final Block block = loc.getBlock();
@@ -766,7 +766,7 @@ public class Node {
 
 	/**
 	 * Creates an explosion at the location of the node which has a power of (remainingPower/1000)
-	 * @power 1000
+	 * @spellscript.power 1000
 	 */
 	public void selfDestruct() {
 		checkPower(1000);

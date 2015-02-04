@@ -250,6 +250,7 @@ public class Node {
 			return;
 		}
 		amount = Math.min(amount, 1000.0);
+		amount = Math.min(amount, (((Damageable)live.getLivingEntity()).getMaxHealth() - ((Damageable)live.getLivingEntity()).getHealth())*SpellScript.powerToHealthRatio);
 		double receivedPower = Math.min(amount, power);
 		final double health = receivedPower/SpellScript.powerToHealthRatio;
 		checkPower(1);

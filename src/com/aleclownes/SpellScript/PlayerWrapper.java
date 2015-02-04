@@ -47,6 +47,13 @@ public class PlayerWrapper extends LivingEntityWrapper {
 		return getPlayer().isOnline();
 	}
 	
+	/**Gets whether or not the player is sneaking
+	 * @return Whether or not the player is sneaking
+	 */
+	public boolean isSneaking(){
+		return getPlayer().isSneaking();
+	}
+	
 	@Override
 	public boolean equals(Object object){
 		return getPlayer().equals(object);

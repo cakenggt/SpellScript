@@ -1,5 +1,7 @@
 package com.aleclownes.SpellScript;
 
+import java.util.UUID;
+
 /**Wrapper for Node
  * @author alownes
  *
@@ -65,6 +67,13 @@ public class NodeWrapper extends Wrapper {
 	 */
 	public Object getMapValue(String key){
 		return getNode().getMap().get(key);
+	}
+	
+	/**Gets the node's uid
+	 * @return UUID
+	 */
+	public UUID getUid(){
+		return getNode().getUid();
 	}
 	
 	@Override

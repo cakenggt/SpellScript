@@ -800,6 +800,13 @@ public class Node {
 	void setTask(BukkitTask task){
 		this.task = task;
 	}
+	
+	/**Gets the node's uid.
+	 * @return UUID
+	 */
+	public UUID getUid(){
+		return uid;
+	}
 
 	@Override
 	public boolean equals(Object object){

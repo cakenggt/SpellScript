@@ -381,7 +381,9 @@ public class Node {
 	 */
 	public void placeBlock(int slot){
 		final ItemStack stack = inv.getItem(slot);
-		if (loc.getBlock().getType() == Material.AIR && stack != null && stack.getType().isBlock()){
+		if ((loc.getBlock().getType() == Material.AIR || loc.getBlock().getType() == Material.STATIONARY_WATER ||
+				loc.getBlock().getType() == Material.STATIONARY_LAVA || loc.getBlock().getType() == Material.WATER ||
+				loc.getBlock().getType() == Material.LAVA) && stack != null && stack.getType().isBlock()){
 			checkPower(10);
 			if (stack.getAmount() > 1){
 				stack.setAmount(stack.getAmount()-1);

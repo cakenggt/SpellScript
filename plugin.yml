@@ -1,6 +1,6 @@
 name: SpellScript
 main: com.aleclownes.SpellScript.SpellScript
-version: 0.01
+version: 0.02
 commands:
   SpellScript:
     description: This command scripts the text written in the book in your hand to the item in the slot to the right of it.

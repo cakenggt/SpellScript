@@ -17,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
@@ -188,6 +189,12 @@ public class SpellScript extends JavaPlugin implements Listener, Runnable {
 						String loreLine = it.next();
 						if (loreLine.startsWith(token)){
 							String command = loreLine.substring(token.length());
+							if (((Damageable)player).getHealth() >= 1){
+								player.damage(1.0);
+							}
+							else{
+								break;
+							}
 							Node node = new Node(this, player, new ChatWrapper(event), command, args, loc);
 							node.setTask(getServer().getScheduler().runTaskLaterAsynchronously(this, new NodeRunnable(this, node), 1));
 							nodeList.add(node);

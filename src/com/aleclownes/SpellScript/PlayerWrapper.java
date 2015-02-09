@@ -1,6 +1,10 @@
 package com.aleclownes.SpellScript;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**Wrapper for Player
  * @author alownes
@@ -52,6 +56,30 @@ public class PlayerWrapper extends LivingEntityWrapper {
 	 */
 	public boolean isSneaking(){
 		return getPlayer().isSneaking();
+	}
+	
+	/**Gets the inventory of the player
+	 * @return List of ItemStackWrapper
+	 */
+	public List<ItemStackWrapper> getInventory(){
+		return convertInventory(getPlayer().getInventory().getContents());
+	}
+	
+	/**Gets the armor of the player
+	 * @return List of ItemStackWrapper
+	 */
+	public List<ItemStackWrapper> getArmor(){
+		return convertInventory(getPlayer().getInventory().getArmorContents());
+	}
+	
+	private List<ItemStackWrapper> convertInventory(ItemStack[] contents){
+		List<ItemStackWrapper> convertedContents = new ArrayList<ItemStackWrapper>();
+		for (ItemStack stack : contents){
+			if (stack != null){
+				convertedContents.add(new ItemStackWrapper(stack));
+			}
+		}
+		return convertedContents;
 	}
 	
 	@Override

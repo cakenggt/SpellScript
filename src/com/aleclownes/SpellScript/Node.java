@@ -711,6 +711,14 @@ public class Node {
 		ItemStack stack = inv.getItem(slot);
 		stack.setItemMeta(meta);
 	}
+	
+	/**Sets the item meta of an Item entity
+	 * @param item - ItemWrapper
+	 * @param meta - ItemMeta
+	 */
+	public void setItemMeta(ItemWrapper item, ItemMeta meta){
+		item.getItem().getItemStack().setItemMeta(meta);
+	}
 
 	/**Sets the pickup delay of an ItemWrapper. Must be within 1 meter of the item.
 	 * @param item - ItemWrapper

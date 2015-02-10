@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 
 /**Wrapper for LivingEntity
  * @author alownes
@@ -64,6 +65,13 @@ public class LivingEntityWrapper extends EntityWrapper {
 	 */
 	public double getHealth(){
 		return ((Damageable)getLivingEntity()).getHealth();
+	}
+	
+	/**Gets the vector describing the direction the living entity is looking
+	 * @return Vector
+	 */
+	public Vector getEyeDirection(){
+		return getLivingEntity().getEyeLocation().getDirection();
 	}
 	
 	@Override

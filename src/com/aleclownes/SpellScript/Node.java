@@ -797,6 +797,29 @@ public class Node {
 		}
 		suicide();
 	}
+	
+	/**Sets the living entity's facing direction.
+	 * @param live - LivingEntityWrapper
+	 * @param vec - Facing direction as a vector
+	 * @spellscript.power 1
+	 */
+	public void setEyeDirection(final LivingEntityWrapper live, Vector vec){
+		checkPower(1);
+		final Location location = live.getLivingEntity().getLocation().setDirection(vec);
+		try {
+			sched.callSyncMethod(p, new Callable<Boolean>(){
+				@Override
+				public Boolean call(){
+					live.getLivingEntity().teleport(location);
+					return true;
+				}
+			}).get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**Gets whether or not the node is still alive
 	 * @return true if yes, false if no

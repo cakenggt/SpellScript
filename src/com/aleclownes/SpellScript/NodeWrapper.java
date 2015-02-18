@@ -75,10 +75,5 @@ public class NodeWrapper extends Wrapper {
 	public UUID getUid(){
 		return getNode().getUid();
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getNode().equals(object);
-	}
 
 }

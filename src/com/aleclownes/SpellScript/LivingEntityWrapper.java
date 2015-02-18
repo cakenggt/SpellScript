@@ -73,10 +73,5 @@ public class LivingEntityWrapper extends EntityWrapper {
 	public Vector getEyeDirection(){
 		return getLivingEntity().getEyeLocation().getDirection();
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getLivingEntity().equals(object);
-	}
 
 }

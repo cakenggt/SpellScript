@@ -41,10 +41,5 @@ public class ItemStackWrapper extends Wrapper {
 	public ItemMeta getItemMeta(){
 		return getItemStack().getItemMeta();
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getItemStack().equals(object);
-	}
 
 }

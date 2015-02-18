@@ -38,10 +38,5 @@ public class ChatWrapper extends Wrapper {
 	public String getMessage(){
 		return message;
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getObject().equals(object);
-	}
 
 }

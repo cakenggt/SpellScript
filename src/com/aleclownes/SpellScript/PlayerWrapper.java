@@ -81,10 +81,5 @@ public class PlayerWrapper extends LivingEntityWrapper {
 		}
 		return convertedContents;
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getPlayer().equals(object);
-	}
 
 }

@@ -76,10 +76,5 @@ public class EntityWrapper extends Wrapper {
 	public float getFallDistance(){
 		return getEntity().getFallDistance();
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getEntity().equals(object);
-	}
 
 }

@@ -1,5 +1,7 @@
 package com.aleclownes.SpellScript;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+
 /**Wrapper superclass
  * @author alownes
  *
@@ -21,7 +23,15 @@ public class Wrapper {
 	
 	@Override
 	public boolean equals(Object object){
-		return this.object.equals(object);
+		if (object == null) { return false; }
+		if (object == this) { return true; }
+		if (object.getClass() != getClass()) {
+			return false;
+		}
+		Wrapper rhs = (Wrapper) object;
+		return new EqualsBuilder()
+		.append(getObject(), rhs.getObject())
+		.isEquals();
 	}
 
 }

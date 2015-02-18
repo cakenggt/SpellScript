@@ -32,10 +32,5 @@ public class ItemWrapper extends EntityWrapper {
 	public int getPickupDelay(){
 		return getItem().getPickupDelay();
 	}
-	
-	@Override
-	public boolean equals(Object object){
-		return getItem().equals(object);
-	}
 
 }
